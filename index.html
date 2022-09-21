@@ -14,12 +14,21 @@
       <h4>Timer: <span class="timer">000</span></h4>
       <h4>Lives: <span class="lives-count">000</span></h4>
       <h4>Best Score: <span class="best-score">000</span></h4>
+      <div>
+        <h4>Hints: <span class="hints-count"></span></h4>
+        <button class="use-hint" onclick="toggleHintMode()">Use hint</button>
+      </div>
+      <div>
+        <h4>Safe-clicks left: <span class="safe-clicks-count"></span></h4>
+        <button class="use-safe-click" onclick="handleSafeClick()">Use Safe Click</button>
+      </div>
       <button onclick="initGame()" class="emoji"></button>
     </thead>
     <tbody class="game-board">
 
     </tbody>
   </table>
+  <h4>Best record: <span class="best-record"></span> seconds.</h4>
 
   <script src="js/minesweeper.js"></script>
   <script src="js/utils.js"></script>

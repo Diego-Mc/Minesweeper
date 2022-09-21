@@ -26,6 +26,20 @@
   background-color: rgb(68, 185, 82);
 }
 
+.safe {
+  animation: 500ms infinite blink;
+}
+
+@keyframes blink {
+  from {
+    background-color: lime;
+  }
+
+  to {
+    background-color: rgb(117, 117, 117);
+  }
+}
+
 .negs-1::after {
   content: '1';
   color: blue;
