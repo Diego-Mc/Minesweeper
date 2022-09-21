@@ -1,0 +1,75 @@
+.cell {
+  width: 32px;
+  height: 32px;
+  background-color: rgb(117, 117, 117);
+}
+
+.empty {
+  background-color: rgb(192, 192, 192);
+}
+
+.mine {
+  background-color: rgb(220, 112, 112);
+}
+
+.mine-death {
+  background-color: rgb(112, 37, 37);
+  /* bomb that killed you */
+}
+
+.mine-wrong {
+  background-color: rgb(255, 195, 195);
+  /* wrong guess marked */
+}
+
+.mark {
+  background-color: rgb(68, 185, 82);
+}
+
+.negs-1::after {
+  content: '1';
+  color: blue;
+  font-size: 24px;
+}
+
+.negs-2::after {
+  content: '2';
+  color: green;
+  font-size: 24px;
+}
+
+.negs-3::after {
+  content: '3';
+  color: red;
+  font-size: 24px;
+}
+
+.negs-4::after {
+  content: '4';
+  color: darkblue;
+  font-size: 24px;
+}
+
+.negs-5::after {
+  content: '5';
+  color: firebrick;
+  font-size: 24px;
+}
+
+.negs-6::after {
+  content: '6';
+  color: teal;
+  font-size: 24px;
+}
+
+.negs-7::after {
+  content: '7';
+  color: rgb(39, 36, 36);
+  font-size: 24px;
+}
+
+.negs-8::after {
+  content: '8';
+  color: darkslategray;
+  font-size: 24px;
+}

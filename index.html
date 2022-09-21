@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/minesweeper.css">
+  <title>Minesweeper</title>
+</head>
+<body onload="initGame()" oncontextmenu="return false">
+  <table>
+    <thead>
+      <h4>Marks: <span class="marks-count">00</span></h4>
+      <h4>Timer: <span class="timer">000</span></h4>
+      <h4>Lives: <span class="lives-count">000</span></h4>
+      <h4>Best Score: <span class="best-score">000</span></h4>
+      <button onclick="initGame()" class="emoji"></button>
+    </thead>
+    <tbody class="game-board">
+
+    </tbody>
+  </table>
+
+  <script src="js/minesweeper.js"></script>
+  <script src="js/utils.js"></script>
+</body>
+</html>
