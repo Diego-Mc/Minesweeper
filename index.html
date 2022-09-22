@@ -8,29 +8,47 @@
   <title>Minesweeper</title>
 </head>
 <body onload="initGame()" oncontextmenu="return false">
+  <h4>Lives: <span class="lives-left">000</span></h4>
+  <div>
+    <h4>Hints: <span class="hints-left"></span></h4>
+    <button id="hint-mode" class="use-hint" onclick="toggleManager(this)">Use hint</button>
+    <button id="manual-mode" class="use-manual" onclick="toggleManager(this)">Manual Mode</button>
+  </div>
+  <div>
+    <h4>Safe-clicks left: <span class="safe-clicks-left"></span></h4>
+    <button class="use-safe-click" onclick="handleSafeClick()">Use Safe Click</button>
+    <button class="undo-btn" onclick="undoMove()">Undo</button>
+  </div>
+  <div>
+    <h4>Select Difficulty:</h4>
+    <button id="beginner" class="difficulty-btn" onclick="toggleManager(this)">Beginner</button>
+    <button id="medium" class="difficulty-btn" onclick="toggleManager(this)">Medium</button>
+    <button id="expert" class="difficulty-btn" onclick="toggleManager(this)">Expert</button>
+  </div>
   <table>
-    <thead>
-      <h4>Marks: <span class="marks-count">00</span></h4>
-      <h4>Timer: <span class="timer">000</span></h4>
-      <h4>Lives: <span class="lives-count">000</span></h4>
-      <h4>Best Score: <span class="best-score">000</span></h4>
-      <div>
-        <h4>Hints: <span class="hints-count"></span></h4>
-        <button class="use-hint" onclick="toggleHintMode()">Use hint</button>
+
+      <div class="info-container">
+
+        <div class="counter-container">
+          <div id="counter-tens"></div>
+          <div id="counter-ones"></div>
+        </div>
+        <div onclick="initGame()" class="emoji"></div>
+        <div class="timer-container">
+          <div id="timer-hundreds"></div>
+          <div id="timer-tens"></div>
+          <div id="timer-ones"></div>
+        </div>
       </div>
-      <div>
-        <h4>Safe-clicks left: <span class="safe-clicks-count"></span></h4>
-        <button class="use-safe-click" onclick="handleSafeClick()">Use Safe Click</button>
-      </div>
-      <button onclick="initGame()" class="emoji"></button>
-    </thead>
+    <thead></thead>
     <tbody class="game-board">
 
     </tbody>
   </table>
   <h4>Best record: <span class="best-record"></span> seconds.</h4>
-
+  <h4 class="over-mark-msg hide">You are over marked! remove one mark</h4>
   <script src="js/minesweeper.js"></script>
+  <script src="js/toggle.js"></script>
   <script src="js/utils.js"></script>
 </body>
 </html>
