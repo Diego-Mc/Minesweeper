@@ -48,6 +48,10 @@ var gGame = {
   MAX_TIME: 999,
   isManualMode: false,
   isManualEdit: false,
+  minesMarkStatus: {},
+  HINT_FLASH_TIME: 1000,
+  megaHintMode: false,
+  megaHintPositions: {},
 }
 
 var gHistory = (gHistory = {
@@ -88,6 +92,8 @@ function initGame() {
     cellsShown: [],
   }
 
+  gGame.minesMarkStatus = {}
+
   gGame.marksLeft = 0
   updateMarksLeft()
 
@@ -105,11 +111,14 @@ function initGame() {
   gGame.cellsShown = 0
   gGame.isOn = true
   gGame.hintMode = false
+  gGame.megaHintMode = false
+  gGame.megaHintPositions = {}
   gGame.isManualMode = false
   gGame.isManualEdit = false
   gGame.isOverMarked = false
   gGame.timerInterval = 0
   gGame.secsPassed = 0
+  gGame.setMines = setMinesRandomly
   renderTime(0)
 
   renderBestRecord()
@@ -164,12 +173,27 @@ function toggleManualMode() {
   }
 }
 
-//TODO: manually positioned mines button, a user can configure where mines are
-//TODO: 7-boom, place mines based on cell-index % 7
-//TODO: dark mode
+function setMines7Boom(board = gBoard) {
+  for (var i = 0; i < gLevel.SIZE; i++) {
+    for (var j = 0; j < gLevel.SIZE; j++) {
+      const cellIdx = i * gLevel.SIZE + j
+
+      if (cellIdx % 7 === 0 || (cellIdx + '').includes('7'))
+        addMine(board, i, j)
+    }
+  }
+}
+
+function handle7Boom() {
+  initGame()
+
+  gGame.setMines = setMines7Boom
+}
+
 //TODO: mega hint button, after click you can select top-left & bottom-right corners of area you want to see for 2sec
 //TODO: mine exterminator buddy - will remove 3 random mines
 
+//TODO: dark mode
 //TODO: render mine that killed you
 //TODO: render wrong marks
 //TODO: render scared emoji
@@ -192,13 +216,13 @@ function cellClicked(i, j) {
   renderCell(gBoard, i, j)
 
   if (currCell.isMine) {
-    if (gGame.livesLeft === 0) return gameOver(false)
     if (!gGame.marksLeft) {
       handleOverMarked()
       gGame.isOverMarked = true
     }
     updateLivesLeft(-1)
     updateMarksLeft(-1)
+    if (gGame.livesLeft === 0) return gameOver(false)
     return
   }
 
@@ -219,6 +243,10 @@ function cellMarked(i, j) {
 
   currCell.isMarked = !currCell.isMarked
 
+  if (gGame.minesMarkStatus.hasOwnProperty(`mine-${i}-${j}`)) {
+    gGame.minesMarkStatus[`mine-${i}-${j}`] = currCell.isMarked
+  }
+
   renderCell(gBoard, i, j)
 
   updateMarksLeft(currCell.isMarked ? -1 : +1)
@@ -230,6 +258,15 @@ function cellMarked(i, j) {
 
   checkVictory()
 }
+
+function areAllMinesMarked() {
+  for (var mine in gGame.minesMarkStatus) {
+    if (!gGame.minesMarkStatus[mine]) return false
+  }
+  return true
+}
+
+//TODO:!!! set a data structure to track if a marked cell is a correct mark, using this we can evaluate marked correctly cells to actual cells and check for win & also ESPECIALLY not rely on gLevel as the actual mines counter, gLevel should only be used to generate a board using default settings, when creating special boards/dynamic boards we should use the actual mines placement as the single source of truth for this matter. !!!//TODO
 
 function setMinesRandomly(board = gBoard) {
   var minesCount = gLevel.MINES
@@ -304,6 +341,8 @@ function handleClick(ev, elCell, i, j) {
   if (!gGame.isOn) return
   switch (ev.button) {
     case 0:
+      if (gGame.megaHintMode) {
+      }
       if (gGame.isManualEdit) return handleManualBombClick(i, j)
       if (gGame.hintMode) return handleHintCellClick(i, j)
       if (isFirstMove()) handleFirstClick(i, j)
@@ -315,7 +354,7 @@ function handleClick(ev, elCell, i, j) {
 
 function handleFirstClick(i, j) {
   gBoard[i][j].isShown = true
-  gGame.isManualMode || setMinesRandomly()
+  gGame.isManualMode || gGame.setMines()
   const startTime = Date.now()
   gGame.timerInterval = setInterval(() => updateTime(startTime), 1000)
   renderCell(gBoard, i, j)
@@ -340,7 +379,17 @@ function handleOverMarked() {
 function handleHintCellClick(i, j) {
   if (isFirstMove()) return
 
-  _flashCellAndNegs(i, j, 1000)
+  const startPos = { i: i - 1, j: j - 1 }
+  const endPos = { i: i + 1, j: j + 1 }
+  _flashArea(startPos, endPos)
+  updateHintsLeft(-1)
+  toggleHintMode()
+}
+
+function handleMegaHintCellClick(startPos, endPos) {
+  if (isFirstMove()) return
+
+  _flashArea(startPos, endPos)
   updateHintsLeft(-1)
   toggleHintMode()
 }
@@ -381,10 +430,10 @@ function isClickable(cell) {
 }
 
 function checkVictory() {
-  const areAllCellsShown = gGame.cellsShown === gLevel.SIZE ** 2 - gLevel.MINES
-  const areAllMinesMarked = gGame.marksLeft === 0
+  const bombsAmount = Object.keys(gGame.minesMarkStatus).length
+  const areAllCellsShown = gGame.cellsShown === gLevel.SIZE ** 2 - bombsAmount
 
-  if (areAllCellsShown && areAllMinesMarked) return gameOver(true)
+  if (areAllCellsShown && areAllMinesMarked()) return gameOver(true)
 }
 
 function isFirstMove() {
@@ -405,7 +454,7 @@ function updateMarksLeft(diff = 0) {
   // const elPropCounter = document.querySelector(`.${'marks-left'}`)
   // elPropCounter.innerText = gGame['marksLeft']
 
-  renderCount(gGame.marksLeft)
+  if (gGame.marksLeft >= 0) renderCount(gGame.marksLeft)
 }
 
 function updateSafeClicksLeft(diff = 0) {
@@ -529,6 +578,7 @@ function addMine(board, i, j) {
   if (board[i][j].isMine) return
   board[i][j].isMine = true
   updateMarksLeft(+1)
+  gGame.minesMarkStatus[`mine-${i}-${j}`] = false //not marked yet
 
   _updateNegMinesCount(board, i, j, +1)
 }
@@ -536,6 +586,7 @@ function addMine(board, i, j) {
 function removeMine(board, i, j) {
   board[i][j].isMine = false
   updateMarksLeft(-1)
+  delete gGame.minesMarkStatus[`mine-${i}-${j}`]
 
   _updateNegMinesCount(board, i, j, -1)
 }
@@ -556,12 +607,10 @@ function _toggleCellReveal(i, j) {
   renderCell(gBoard, i, j)
 }
 
-function _flashCellAndNegs(a, b, time) {
+function _flashArea(startPos, endPos) {
   const revealedCells = []
-  for (var i = a - 1; i <= a + 1; i++) {
-    if (i < 0 || i >= gBoard.length) continue
-    for (var j = b - 1; j <= b + 1; j++) {
-      if (j < 0 || j >= gBoard[0].length) continue
+  for (var i = startPos.i; i <= endPos.i; i++) {
+    for (var j = startPos.j; j <= endPos.j; j++) {
       if (gBoard[i][j].isShown) continue
 
       revealedCells.push([i, j])
@@ -573,7 +622,7 @@ function _flashCellAndNegs(a, b, time) {
     for (var i = 0; i < revealedCells.length; i++) {
       _toggleCellReveal(...revealedCells[i])
     }
-  }, time)
+  }, gGame.HINT_FLASH_TIME)
 }
 
 function copyObj(board) {
