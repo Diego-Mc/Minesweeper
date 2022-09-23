@@ -157,9 +157,9 @@ function gameOver(didWin) {
 
     if (isNewRecord) localStorage.setItem('best-record', gGame.secsPassed)
   } else {
+    renderMinesOnLoss()
     gGame.isOverMarked = false
     handleOverMarked()
-    renderMinesOnLoss()
   }
 }
 
@@ -234,8 +234,8 @@ function cellClicked(i, j) {
 
   if (currCell.isMine) {
     if (!gGame.marksLeft) {
-      handleOverMarked()
       gGame.isOverMarked = true
+      handleOverMarked()
     }
     updateLivesLeft(-1)
     updateMarksLeft(-1)
@@ -271,8 +271,8 @@ function cellMarked(i, j) {
   updateMarksLeft(currCell.isMarked ? -1 : +1)
 
   if (gGame.isOverMarked) {
-    handleOverMarked()
     gGame.isOverMarked = false
+    handleOverMarked()
   }
 
   checkVictory()
@@ -401,13 +401,28 @@ function handleMegaHintCellClick(i, j) {
 }
 
 function handleFirstClick(i, j) {
-  gBoard[i][j].isShown = true
+  const currCell = gBoard[i][j]
+  currCell.isShown = true
   gGame.isManualMode || gGame.setMines()
   const startTime = Date.now()
   gGame.timerInterval = setInterval(() => updateTime(startTime), 1000)
   renderCell(gBoard, i, j)
   gGame.cellsShown = 1
-  if (gBoard[i][j].negMinesCount === 0) expandShown(gBoard, i, j)
+
+  if (currCell.isMine) {
+    if (!gGame.marksLeft) {
+      gGame.isOverMarked = true
+      handleOverMarked()
+    }
+    updateLivesLeft(-1)
+    updateMarksLeft(-1)
+    delete gGame.minesMarkStatus[`mine-${i}-${j}`]
+    gGame.minesRevealed.push({ i, j })
+    if (gGame.livesLeft === 0) return gameOver(false)
+    return
+  }
+
+  if (currCell.negMinesCount === 0) expandShown(gBoard, i, j)
 }
 
 function handleOverMarked() {
@@ -417,11 +432,13 @@ function handleOverMarked() {
       if (!currCell.isMarked) continue
 
       const elMarkedCell = getElCellByCoords(i, j)
-      elMarkedCell.classList.toggle('over-mark')
+      if (gGame.isOverMarked) elMarkedCell.classList.add('over-mark')
+      else elMarkedCell.classList.remove('over-mark')
     }
   }
   const overMarkMsg = document.querySelector('.over-mark-msg')
-  overMarkMsg.classList.toggle('hide')
+  if (gGame.isOverMarked) overMarkMsg.classList.remove('hide')
+  else overMarkMsg.classList.add('hide')
 }
 
 function handleHintCellClick(i, j) {
