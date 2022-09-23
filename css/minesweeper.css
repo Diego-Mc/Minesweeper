@@ -55,24 +55,6 @@ table {
   background-image: url('../sprites/cells/cell_clicked.png');
 }
 
-.mine {
-  background-image: url('../sprites/cells/mine.png');
-}
-
-.mine-death {
-  background-color: rgb(112, 37, 37);
-  /* bomb that killed you */
-}
-
-.mine-wrong {
-  background-color: rgb(255, 195, 195);
-  /* wrong guess marked */
-}
-
-.mark {
-  background-image: url('../sprites/cells/mark.png');
-}
-
 .safe {
   animation: 500ms infinite blink;
 }
@@ -196,6 +178,22 @@ table {
 }
 .count-9 {
   background-image: url('../sprites/counters/count-9.png');
+}
+
+.mine {
+  background-image: url('../sprites/cells/mine.png');
+}
+
+.mine-death {
+  background-image: url('../sprites/cells/mine_selected.png');
+}
+
+.mine-wrong {
+  background-image: url('../sprites/cells/mine-wrong.png');
+}
+
+.mark {
+  background-image: url('../sprites/cells/mark.png');
 }
 
 /* * {

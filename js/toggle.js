@@ -1,13 +1,29 @@
 'use strict'
 
+const gTOGGLERES = {
+  HINT_MODE: 'hint-mode',
+  MEGA_HINT_MODE: 'mega-hint-mode',
+  MANUAL_MODE: 'manual-mode',
+  BEGINNER: 'beginner',
+  MEDIUM: 'medium',
+  EXPERT: 'expert',
+}
+var gToggleOn = ''
+
 function toggleManager(elBtn) {
   console.dir(elBtn)
+  if (!gToggleOn) return routeToggle(elBtn.id)
 
-  //TODO: instanly turn disabled when 0 (not like now..)
+  routeToggle(gToggleOn)
+}
 
-  switch (elBtn.id) {
+function routeToggle(toggleName) {
+  switch (toggleName) {
     case 'hint-mode':
       if (gGame.hintsLeft !== 0) return toggleHintMode()
+      break
+    case 'mega-hint-mode':
+      if (gGame.megaHintsLeft !== 0) return toggleMegaHintMode()
       break
     case 'manual-mode':
       if (!gGame.isManualEdit) initGame()
@@ -19,18 +35,34 @@ function toggleManager(elBtn) {
     case 'expert':
       return setLastSelectedDifficulty('expert')
   }
+}
 
-  //ADD DISABLED ATTR
+function toggleHintMode() {
+  gGame.hintMode = !gGame.hintMode //TODO: add visual indicator
+}
 
-  //difficulties
+function toggleMegaHintMode() {
+  gGame.megaHintPositions = []
+  gGame.megaHintMode = !gGame.megaHintMode
+  //TODO: add visual indicator
+}
 
-  //undo-btn - undoMove() //NOT TOGGLE
+function toggleManualMode() {
+  gGame.isManualEdit = !gGame.isManualEdit
 
-  //safe-click - handleSafeClick() //NOT TOGGLE
-
-  //use-manual - toggleManualMode()
-
-  //use-hint - toggleHintMode()
+  if (gGame.isManualEdit) {
+    const cellArgs = [false, true] //isMine, isShown
+    gBoard = buildBoard(cellArgs)
+    renderBoard(gBoard)
+  } else {
+    for (var i = 0; i < gBoard.length; i++) {
+      for (var j = 0; j < gBoard[0].length; j++) {
+        gBoard[i][j].isShown = false
+      }
+    }
+    renderBoard(gBoard)
+    gGame.isManualMode = true
+  }
 }
 
 function setLastSelectedDifficulty(levelStr) {
