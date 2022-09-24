@@ -50,10 +50,7 @@ var gGame = {
   safeClicksLeft: 0,
   isOverMarked: false,
   MAX_TIME: 999,
-  isManualMode: false,
-  isManualEdit: false,
   minesMarkStatus: {},
-  megaHintMode: false,
   megaHintPositions: [],
   megaHintsLeft: 0,
   minesRevealed: [],
@@ -74,6 +71,8 @@ var gClasses = {
   },
   LIFE: '❤️',
   HINT: '💡',
+  MEGA_HINT: '🗯️',
+  SAFE_CLICK: '👆',
 }
 
 function setMinesAmount(minesAmount) {
@@ -81,9 +80,30 @@ function setMinesAmount(minesAmount) {
 }
 
 function initGame() {
+  //REMOVE - testing out styles///////
+  // var testEl = document.querySelector('.test')
+  // testEl.innerHTML = renderButton('7-boom', '7-BOOM')
+  var gameModesEl = document.querySelector('.game-modes')
+  gameModesEl.innerHTML =
+    renderButton('beginner', 'Beginner', 'toggleManager(this)') +
+    renderButton('medium', 'Medium', 'toggleManager(this)') +
+    renderButton('expert', 'Expert', 'toggleManager(this)') +
+    renderButton('7-boom', '7-Boom', 'handle7Boom()') +
+    renderButton('manual-mode', 'Manual Mode', 'toggleManager(this)')
+
+  var gameModesEl = document.querySelector('.helper-btns')
+  gameModesEl.innerHTML =
+    renderButton('hint-mode', 'Hint', 'toggleManager(this)') +
+    renderButton('safe-click', 'Safe Click', 'handleSafeClick()') +
+    renderButton('mega-hint-mode', 'Mega Hint', 'toggleManager(this)') +
+    renderButton('exterminator', 'Exterminator Buddy', 'handleExterminator()')
+  /////////////////
+
   resetGame()
 
-  gGame.isManualMode || updateLastSelectedDifficulty()
+  updateLastSelectedDifficulty()
+
+  populateTogglers()
 
   gBoard = buildBoard()
   gHistory = {
@@ -117,10 +137,7 @@ function initGame() {
   gGame.cellsShown = 0
   gGame.isOn = true
   gGame.hintMode = false
-  gGame.megaHintMode = false
   gGame.megaHintPositions = []
-  gGame.isManualMode = false
-  gGame.isManualEdit = false
   gGame.isOverMarked = false
   gGame.timerInterval = 0
   gGame.secsPassed = 0
@@ -167,7 +184,6 @@ function resetGame() {
   clearInterval(gGame.timerInterval)
   gGame.timerInterval = 0
   gGame.isOn = false
-  gGame.isManualMode = false
 }
 
 function setMines7Boom(board = gBoard) {
@@ -241,7 +257,7 @@ function cellClicked(i, j) {
     updateMarksLeft(-1)
     delete gGame.minesMarkStatus[`mine-${i}-${j}`]
     gGame.minesRevealed.push({ i, j })
-    if (gGame.livesLeft === 0) return gameOver(false)
+    checkGameOver()
     return
   }
 
@@ -249,7 +265,7 @@ function cellClicked(i, j) {
 
   if (currCell.negMinesCount === 0) expandShown(gBoard, i, j)
 
-  checkVictory()
+  checkGameOver()
 }
 
 function cellMarked(i, j) {
@@ -275,7 +291,7 @@ function cellMarked(i, j) {
     handleOverMarked()
   }
 
-  checkVictory()
+  checkGameOver()
 }
 
 function getMinesMarkedAmount() {
@@ -311,18 +327,6 @@ function setMinesRandomly(board = gBoard) {
 
 //RENDERERS:
 
-function renderSafeClick(board) {
-  const nonMineElements = getHiddenNonMineElements(board)
-  const randIdx = getRandomInt(0, nonMineElements.length)
-  const safeElement = nonMineElements[randIdx]
-
-  if (!safeElement) return
-
-  safeElement.classList.add('safe')
-
-  setTimeout(() => safeElement.classList.remove('safe'), 2000)
-}
-
 function renderBoard(board) {
   var elGameBoard = document.querySelector('.game-board')
   var strHTML = ''
@@ -338,11 +342,16 @@ function renderBoard(board) {
   elGameBoard.innerHTML = strHTML
 }
 
-function renderBestRecord() {
-  const elBestRecord = document.querySelector('.best-record')
-  const bestRecord = localStorage.getItem('best-record') || '?'
+function renderSafeClick(board) {
+  const nonMineElements = getHiddenNonMineElements(board)
+  const randIdx = getRandomInt(0, nonMineElements.length)
+  const safeElement = nonMineElements[randIdx]
 
-  elBestRecord.innerText = bestRecord
+  if (!safeElement) return
+
+  safeElement.classList.add('safe')
+
+  setTimeout(() => safeElement.classList.remove('safe'), 2000)
 }
 
 function renderMinesOnLoss() {
@@ -361,13 +370,12 @@ function renderMinesOnLoss() {
     }
   }
   const mineDeathPos = gGame.minesRevealed.pop()
-  const deathCell = gBoard[mineDeathPos.i][mineDeathPos.j]
   renderCell(gBoard, mineDeathPos.i, mineDeathPos.j, 'mine-death')
 }
 
 //HANDLERS
 function handleSafeClick() {
-  if (isFirstMove()) return
+  if (didGameStart()) return
 
   if (gGame.safeClicksLeft === 0) return
 
@@ -379,10 +387,11 @@ function handleClick(ev, elCell, i, j) {
   if (!gGame.isOn) return
   switch (ev.button) {
     case 0:
-      if (gGame.megaHintMode) return handleMegaHintCellClick(i, j)
-      if (gGame.isManualEdit) return handleManualBombClick(i, j)
-      if (gGame.hintMode) return handleHintCellClick(i, j)
-      if (isFirstMove()) handleFirstClick(i, j)
+      if (isToggled(gTogglers.MEGA_HINT_MODE))
+        return handleMegaHintCellClick(i, j)
+      if (isToggled(gTogglers.MANUAL_MODE)) return handleManualBombClick(i, j)
+      if (isToggled(gTogglers.HINT_MODE)) return handleHintCellClick(i, j)
+      if (didGameStart()) handleFirstClick(i, j)
       return cellClicked(i, j)
     case 2:
       return cellMarked(i, j)
@@ -390,24 +399,23 @@ function handleClick(ev, elCell, i, j) {
 }
 
 function handleMegaHintCellClick(i, j) {
-  if (isFirstMove()) return
+  console.log('HERY')
+  if (didGameStart()) return
   const positions = gGame.megaHintPositions
   positions.push({ i, j })
   if (positions.length === 2) {
     _flashArea(...positions, 2000)
-    updateMegaHintsLeft(-1)
-    toggleMegaHintMode()
+    endMegaHintMode()
   }
 }
 
 function handleFirstClick(i, j) {
   const currCell = gBoard[i][j]
   currCell.isShown = true
-  gGame.isManualMode || gGame.setMines()
+  gGame.setMines()
   const startTime = Date.now()
   gGame.timerInterval = setInterval(() => updateTime(startTime), 1000)
   renderCell(gBoard, i, j)
-  gGame.cellsShown = 1
 
   if (currCell.isMine) {
     if (!gGame.marksLeft) {
@@ -422,6 +430,7 @@ function handleFirstClick(i, j) {
     return
   }
 
+  gGame.cellsShown = 1
   if (currCell.negMinesCount === 0) expandShown(gBoard, i, j)
 }
 
@@ -442,13 +451,12 @@ function handleOverMarked() {
 }
 
 function handleHintCellClick(i, j) {
-  if (isFirstMove()) return
+  if (didGameStart()) return
 
   const startPos = { i: i - 1, j: j - 1 }
   const endPos = { i: i + 1, j: j + 1 }
   _flashArea(startPos, endPos, 1000)
-  updateHintsLeft(-1)
-  toggleHintMode()
+  endHintMode()
 }
 
 function handleManualBombClick(i, j) {
@@ -486,16 +494,19 @@ function isClickable(cell) {
   return !cell.isMarked && !cell.isShown
 }
 
-function checkVictory() {
+function checkGameOver() {
   const cellsShowingAmount = gGame.cellsShown + gGame.minesRevealed.length
   const markedMinesAmount = getMinesMarkedAmount()
 
   const didWin = cellsShowingAmount + markedMinesAmount === gLevel.SIZE ** 2
 
+  const didLose = gGame.livesLeft === 0
+
   if (didWin) gameOver(true)
+  if (didLose) gameOver(false)
 }
 
-function isFirstMove() {
+function didGameStart() {
   // return gGame.timerInterval === 0 && gGame.isOn === true
   return gGame.cellsShown === 0
 }
@@ -505,38 +516,6 @@ function updateEmoji(type) {
   const elEmojiBtn = document.querySelector('.emoji')
   elEmojiBtn.className = `emoji ${gClasses.EMOJI[type]}`
   //Add scared emoji call
-}
-
-function updateMarksLeft(diff = 0) {
-  gGame.marksLeft += diff
-
-  // const elPropCounter = document.querySelector(`.${'marks-left'}`)
-  // elPropCounter.innerText = gGame['marksLeft']
-
-  if (gGame.marksLeft >= 0) renderCount(gGame.marksLeft)
-}
-
-function updateSafeClicksLeft(diff = 0) {
-  _updateGlobalPropertyLeft('safeClicksLeft', 'safe-clicks-left', diff)
-}
-
-function updateLivesLeft(diff = 0) {
-  _updateGlobalPropertyLeft('livesLeft', 'lives-left', diff)
-}
-
-function updateHintsLeft(diff = 0) {
-  _updateGlobalPropertyLeft('hintsLeft', 'hints-left', diff)
-}
-
-function updateMegaHintsLeft(diff = 0) {
-  _updateGlobalPropertyLeft('megaHintsLeft', 'mega-hints-left', diff)
-}
-
-function _updateGlobalPropertyLeft(propName, className, diff) {
-  gGame[propName] += diff
-
-  const elPropCounter = document.querySelector(`.${className}`)
-  elPropCounter.innerText = gGame[propName]
 }
 
 //UTILS/GETTERS:

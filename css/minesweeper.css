@@ -16,6 +16,7 @@ body {
   text-align: center;
   margin: auto;
   color: white;
+  font-family: 'VT323', monospace;
 }
 
 table {
@@ -196,6 +197,98 @@ table {
   background-image: url('../sprites/cells/mark.png');
 }
 
+/* GRIDS */
+.custom-btn-part {
+  width: 2px;
+  height: 2px;
+  display: inline-block;
+}
+
+.custom-btn-chunk {
+  display: flex;
+  justify-content: space-between;
+}
+
+.custom-btn {
+  width: fit-content;
+  margin: auto;
+  background-color: #afc0d2;
+  color: #262b44;
+  font-size: 22px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.custom-btn-content {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px 2px 3px;
+}
+
+.custom-btn-img {
+  width: 24px;
+  height: 24px;
+}
+
+.btn-tl {
+  background-image: url('../sprites/custom-btn/btn-light.png');
+}
+.btn-ht {
+  background-image: url('../sprites/custom-btn/btn-light.png');
+  flex-grow: 2;
+  background-size: contain;
+}
+.btn-hb {
+  background-image: url('../sprites/custom-btn/btn-dark.png');
+  flex-grow: 2;
+  background-size: contain;
+}
+.btn-tr,
+.btn-bl {
+  background-image: url('../sprites/custom-btn/btn-bl-tr.png');
+}
+.btn-vl {
+  background-image: url('../sprites/custom-btn/btn-light.png');
+  height: auto;
+  background-size: contain;
+}
+.btn-vr {
+  background-image: url('../sprites/custom-btn/btn-dark.png');
+  height: auto;
+  background-size: contain;
+}
+.btn-br {
+  background-image: url('../sprites/custom-btn/btn-dark.png');
+}
+
+.game-modes-container {
+  margin-bottom: 60px;
+}
+
+.main-container h2 {
+  font-size: 24px;
+}
+
+.stats-container {
+  display: flex;
+  flex-direction: column;
+  text-align: start;
+  font-size: 20px;
+  padding: 0;
+  line-height: 0;
+}
+
+.main-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: baseline;
+}
+
+.helper-btns {
+  display: flex;
+  flex-direction: column;
+}
 /* * {
   margin: 0;
   padding: 0;
