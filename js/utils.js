@@ -19,7 +19,7 @@ function renderButton(idName, innerText, onClickFuncStr = null) {
   topPart += _getButtonPart('btn-tr')
   topPart += '</div>'
   midPart += _getButtonPart('btn-vl')
-  midPart += `<span class="custom-btn-content"><img class="custom-btn-img" src="../sprites/btn-icons/${idName}.png"> <span>${innerText}</span></span>`
+  midPart += `<span class="custom-btn-content"><img class="custom-btn-img" src="./sprites/btn-icons/${idName}.png"> <span>${innerText}</span></span>`
   midPart += _getButtonPart('btn-vr')
   midPart += '</div>'
   bottomPart += _getButtonPart('btn-bl')
