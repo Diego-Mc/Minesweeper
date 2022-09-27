@@ -1,0 +1,149 @@
+.cell.dark {
+  background-image: url('../sprites/cells/dark-mode/cell.png');
+}
+
+.empty.dark {
+  background-image: url('../sprites/cells/dark-mode/cell_clicked.png');
+}
+
+.negs-1.dark {
+  background-image: url('../sprites/cells/dark-mode/cell-1.png');
+}
+
+.negs-2.dark {
+  background-image: url('../sprites/cells/dark-mode/cell-2.png');
+}
+
+.negs-3.dark {
+  background-image: url('../sprites/cells/dark-mode/cell-3.png');
+}
+
+.negs-4.dark {
+  background-image: url('../sprites/cells/dark-mode/cell-4.png');
+}
+
+.negs-5.dark {
+  background-image: url('../sprites/cells/dark-mode/cell-5.png');
+}
+
+.negs-6.dark {
+  background-image: url('../sprites/cells/dark-mode/cell-6.png');
+}
+
+.negs-7.dark {
+  background-image: url('../sprites/cells/dark-mode/cell-7.png');
+}
+
+.negs-8.dark {
+  background-image: url('../sprites/cells/dark-mode/cell-8.png');
+}
+
+.emoji:active.dark {
+  background-image: url('../sprites/emoji/dark-mode/emoji-smile_selected.png');
+}
+
+.emoji-happy.dark {
+  background-image: url('../sprites/emoji/dark-mode/emoji-smile.png');
+}
+
+.emoji-death.dark {
+  background-image: url('../sprites/emoji/dark-mode/emoji-death.png');
+}
+
+/*  REFACTOR IDEA!!! add a "light" class to all elements that require the dark mode change ability, later when dark mdoe btn is clicked do quiery select all to get them and change them to the class "dark", later we can do the opposite to change back.
+
+ALSO, change all "dm" and "dmf" function uses to a line with good readability, priority is that it would be the line stating "light" or "dark"
+***/
+
+.emoji-scared.dark {
+  background-image: url('../sprites/emoji/dark-mode/emoji-scared.png');
+}
+
+.emoji-cool.dark {
+  background-image: url('../sprites/emoji/dark-mode/emoji-cool.png');
+}
+
+.count-0.dark {
+  background-image: url('../sprites/counters/dark-mode/count-0.png');
+}
+
+.count-1.dark {
+  background-image: url('../sprites/counters/dark-mode/count-1.png');
+}
+.count-2.dark {
+  background-image: url('../sprites/counters/dark-mode/count-2.png');
+}
+.count-3.dark {
+  background-image: url('../sprites/counters/dark-mode/count-3.png');
+}
+.count-4.dark {
+  background-image: url('../sprites/counters/dark-mode/count-4.png');
+}
+.count-5.dark {
+  background-image: url('../sprites/counters/dark-mode/count-5.png');
+}
+.count-6.dark {
+  background-image: url('../sprites/counters/dark-mode/count-6.png');
+}
+.count-7.dark {
+  background-image: url('../sprites/counters/dark-mode/count-7.png');
+}
+.count-8.dark {
+  background-image: url('../sprites/counters/dark-mode/count-8.png');
+}
+.count-9.dark {
+  background-image: url('../sprites/counters/dark-mode/count-9.png');
+}
+.count-minus.dark {
+  background-image: url('../sprites/counters/dark-mode/count-minus.png');
+}
+
+.mine.dark {
+  background-image: url('../sprites/cells/dark-mode/mine.png');
+}
+
+.mine-death.dark {
+  background-image: url('../sprites/cells/dark-mode/mine_selected.png');
+}
+
+.mine-wrong.dark {
+  background-image: url('../sprites/cells/dark-mode/mine-wrong.png');
+}
+
+.mark.dark {
+  background-image: url('../sprites/cells/dark-mode/mark.png');
+}
+
+/*GENERAL STYLES:*/
+body.dark {
+  background-color: #41485e;
+  color: white;
+}
+
+/*EXTRAS STYLES*/
+.dark-mode-btn.dark {
+  background-image: url('../sprites/buttons/dark-mode/dark-mode.png');
+}
+
+/*GAME BOARD STYLES:*/
+.game-container.dark {
+  background-color: #41485e;
+  border: 6px #1c1b29 solid;
+  border-left-color: #788697;
+  border-top-color: #788697;
+}
+
+/*OTHERS:*/
+.custom-btn.dark {
+  background-color: #41485e;
+  border-color: #788697 #1c1b29 #1c1b29 #788697;
+  color: white;
+}
+
+.custom-btn:disabled.dark,
+.custom-btn:active.dark,
+.btn-active.dark {
+  border-color: #1c1b29 #41485e #41485e #1c1b29;
+}
+
+/******************************/

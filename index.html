@@ -5,6 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="css/minesweeper.css" />
+    <link rel="stylesheet" href="css/game-board.css" />
+    <link rel="stylesheet" href="css/dark-mode.css" />
+    <link rel="stylesheet" href="css/light-mode.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -13,62 +16,81 @@
     />
     <title>Minesweeper</title>
   </head>
-  <body onload="initGame()" oncontextmenu="return false">
-    <div class="test"></div>
-
-    <div></div>
-    <div>
-      <button class="undo-btn" onclick="undoMove()">Undo</button>
-    </div>
-    <div></div>
-    <!-- Game Modes: -->
-    <div class="game-modes-container">
-      <h2>Game Mode:</h2>
-      <div class="game-modes"></div>
-    </div>
-
-    <div class="main-container">
-      <!-- Helper Buttons -->
-      <div class="helpers-container">
-        <h2>Helpers:</h2>
-        <div class="helper-btns"></div>
+  <body class="light" onload="initGame()" oncontextmenu="return false">
+    <div class="page-container">
+      <div class="extras-container">
+        <div class="history-btns">
+          <button
+            class="custom-btn light"
+            id="undo-btn"
+            title="Undo"
+            onclick="undoMove()"
+          ></button>
+          <button
+            class="custom-btn light"
+            id="redo-btn"
+            title="Redo"
+            onclick="redoMove()"
+          ></button>
+        </div>
+        <span class="lives-left"></span>
+        <div class="control-btns">
+          <div
+            class="dark-mode-btn light"
+            title="Dark Mode"
+            onclick="toggleDarkMode()"
+          ></div>
+        </div>
       </div>
 
-      <div class="game-container">
-        <div class="info-container">
-          <div class="counter-container">
-            <div id="counter-tens"></div>
-            <div id="counter-ones"></div>
-          </div>
-          <div onclick="initGame()" class="emoji"></div>
-          <div class="timer-container">
-            <div id="timer-hundreds"></div>
-            <div id="timer-tens"></div>
-            <div id="timer-ones"></div>
+      <div class="main-container">
+        <div class="helper-container">
+          <h2>Helpers:</h2>
+          <div class="helper-inner-container">
+            <div class="helper-buttons-container"></div>
+            <div class="helper-stats-container">
+              <span class="hints-left"></span>
+              <span class="safe-clicks-left"></span>
+              <span class="mega-hints-left"></span>
+              <span class="exterminators-left"></span>
+            </div>
           </div>
         </div>
+        <div class="game-container light">
+          <div class="info-container">
+            <div class="counter-container">
+              <div id="counter-hundreds"></div>
+              <div id="counter-tens"></div>
+              <div id="counter-ones"></div>
+            </div>
+            <div onclick="initGame()" class="emoji"></div>
+            <div class="timer-container">
+              <div id="timer-hundreds"></div>
+              <div id="timer-tens"></div>
+              <div id="timer-ones"></div>
+            </div>
+          </div>
 
-        <table>
-          <thead></thead>
-          <tbody class="game-board"></tbody>
-        </table>
+          <table>
+            <thead></thead>
+            <tbody class="game-board"></tbody>
+          </table>
+        </div>
+        <div class="game-modes-container">
+          <h2>Game Modes:</h2>
+          <div class="game-modes"></div>
+        </div>
       </div>
-
-      <!-- Stats -->
-      <div class="stats-container">
-        <h2>Stats:</h2>
-        <h4>Mega Hints: <span class="mega-hints-left"></span></h4>
-        <h4>Hints: <span class="hints-left"></span></h4>
-        <h4>Safe-clicks left: <span class="safe-clicks-left"></span></h4>
-        <h4>Lives: <span class="lives-left">000</span></h4>
-
-        <h4>Best record: <span class="best-record"></span> seconds.</h4>
-        <h4 class="over-mark-msg hide">You are over marked! remove one mark</h4>
-      </div>
+      <p class="best-record"></p>
     </div>
+
+    <!-- <footer>Developed & Designed by Diego Monzon Contreras</footer> -->
+
     <script src="js/minesweeper.js"></script>
-    <script src="js/toggle.js"></script>
+    <script src="js/helpers.js"></script>
+    <script src="js/game-modes.js"></script>
     <script src="js/render-stats.js"></script>
+    <script src="js/buttons.js"></script>
     <script src="js/utils.js"></script>
   </body>
 </html>

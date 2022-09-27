@@ -1,0 +1,154 @@
+.cell {
+  background-image: url('../sprites/cells/cell.png');
+  cursor: pointer;
+  height: 32px;
+  padding: 0;
+  width: 32px;
+}
+
+.empty {
+  background-image: url('../sprites/cells/cell_clicked.png');
+}
+
+.safe {
+  animation: 500ms infinite blink;
+}
+
+@keyframes blink {
+  from {
+    outline: lime 2px solid;
+  }
+
+  to {
+    outline: transparent 2px solid;
+  }
+}
+
+.over-mark {
+  animation: 1000ms infinite over-marking;
+}
+
+@keyframes over-marking {
+  from {
+    outline: orange 2px solid;
+  }
+
+  to {
+    outline: transparent 2px solid;
+  }
+}
+
+.negs-1 {
+  background-image: url('../sprites/cells/cell-1.png');
+}
+
+.negs-2 {
+  background-image: url('../sprites/cells/cell-2.png');
+}
+
+.negs-3 {
+  background-image: url('../sprites/cells/cell-3.png');
+}
+
+.negs-4 {
+  background-image: url('../sprites/cells/cell-4.png');
+}
+
+.negs-5 {
+  background-image: url('../sprites/cells/cell-5.png');
+}
+
+.negs-6 {
+  background-image: url('../sprites/cells/cell-6.png');
+}
+
+.negs-7 {
+  background-image: url('../sprites/cells/cell-7.png');
+}
+
+.negs-8 {
+  background-image: url('../sprites/cells/cell-8.png');
+}
+
+.emoji {
+  align-self: center;
+  cursor: pointer;
+  height: 48px;
+  width: 48px;
+
+  /*  */
+}
+
+.emoji:active {
+  background-image: url('../sprites/emoji/emoji-smile_selected.png');
+}
+
+.emoji-happy {
+  background-image: url('../sprites/emoji/emoji-smile.png');
+}
+
+.emoji-death {
+  background-image: url('../sprites/emoji/emoji-death.png');
+}
+
+.emoji-scared {
+  background-image: url('../sprites/emoji/emoji-scared.png');
+}
+
+.emoji-cool {
+  background-image: url('../sprites/emoji/emoji-cool.png');
+}
+
+.counter {
+  display: inline-block;
+  height: 48px;
+  width: 28px;
+}
+
+.count-0 {
+  background-image: url('../sprites/counters/count-0.png');
+}
+
+.count-1 {
+  background-image: url('../sprites/counters/count-1.png');
+}
+.count-2 {
+  background-image: url('../sprites/counters/count-2.png');
+}
+.count-3 {
+  background-image: url('../sprites/counters/count-3.png');
+}
+.count-4 {
+  background-image: url('../sprites/counters/count-4.png');
+}
+.count-5 {
+  background-image: url('../sprites/counters/count-5.png');
+}
+.count-6 {
+  background-image: url('../sprites/counters/count-6.png');
+}
+.count-7 {
+  background-image: url('../sprites/counters/count-7.png');
+}
+.count-8 {
+  background-image: url('../sprites/counters/count-8.png');
+}
+.count-9 {
+  background-image: url('../sprites/counters/count-9.png');
+}
+
+.mine {
+  background-image: url('../sprites/cells/mine.png');
+}
+
+.mine-death {
+  background-image: url('../sprites/cells/mine_selected.png');
+}
+
+.mine-wrong {
+  background-image: url('../sprites/cells/mine-wrong.png');
+}
+
+.mark {
+  background-image: url('../sprites/cells/mark.png');
+}

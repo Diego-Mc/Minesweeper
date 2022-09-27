@@ -1,0 +1,149 @@
+.cell.light {
+  background-image: url('../sprites/cells/cell.png');
+}
+
+.empty.light {
+  background-image: url('../sprites/cells/cell_clicked.png');
+}
+
+.negs-1.light {
+  background-image: url('../sprites/cells/cell-1.png');
+}
+
+.negs-2.light {
+  background-image: url('../sprites/cells/cell-2.png');
+}
+
+.negs-3.light {
+  background-image: url('../sprites/cells/cell-3.png');
+}
+
+.negs-4.light {
+  background-image: url('../sprites/cells/cell-4.png');
+}
+
+.negs-5.light {
+  background-image: url('../sprites/cells/cell-5.png');
+}
+
+.negs-6.light {
+  background-image: url('../sprites/cells/cell-6.png');
+}
+
+.negs-7.light {
+  background-image: url('../sprites/cells/cell-7.png');
+}
+
+.negs-8.light {
+  background-image: url('../sprites/cells/cell-8.png');
+}
+
+.emoji:active.light {
+  background-image: url('../sprites/emoji/emoji-smile_selected.png');
+}
+
+.emoji-happy.light {
+  background-image: url('../sprites/emoji/emoji-smile.png');
+}
+
+.emoji-death.light {
+  background-image: url('../sprites/emoji/emoji-death.png');
+}
+
+/*  REFACTOR IDEA!!! add a "light" class to all elements that require the dark mode change ability, later when dark mdoe btn is clicked do quiery select all to get them and change them to the class "dark", later we can do the opposite to change back.
+
+ALSO, change all "dm" and "dmf" function uses to a line with good readability, priority is that it would be the line stating "light" or "dark"
+***/
+
+.emoji-scared.light {
+  background-image: url('../sprites/emoji/emoji-scared.png');
+}
+
+.emoji-cool.light {
+  background-image: url('../sprites/emoji/emoji-cool.png');
+}
+
+.count-0.light {
+  background-image: url('../sprites/counters/count-0.png');
+}
+
+.count-1.light {
+  background-image: url('../sprites/counters/count-1.png');
+}
+.count-2.light {
+  background-image: url('../sprites/counters/count-2.png');
+}
+.count-3.light {
+  background-image: url('../sprites/counters/count-3.png');
+}
+.count-4.light {
+  background-image: url('../sprites/counters/count-4.png');
+}
+.count-5.light {
+  background-image: url('../sprites/counters/count-5.png');
+}
+.count-6.light {
+  background-image: url('../sprites/counters/count-6.png');
+}
+.count-7.light {
+  background-image: url('../sprites/counters/count-7.png');
+}
+.count-8.light {
+  background-image: url('../sprites/counters/count-8.png');
+}
+.count-9.light {
+  background-image: url('../sprites/counters/count-9.png');
+}
+.count-minus.light {
+  background-image: url('../sprites/counters/count-minus.png');
+}
+
+.mine.light {
+  background-image: url('../sprites/cells/mine.png');
+}
+
+.mine-death.light {
+  background-image: url('../sprites/cells/mine_selected.png');
+}
+
+.mine-wrong.light {
+  background-image: url('../sprites/cells/mine-wrong.png');
+}
+
+.mark.light {
+  background-image: url('../sprites/cells/mark.png');
+}
+
+/*GENERAL STYLES:*/
+body.light {
+  background-color: #b0c0d1;
+  color: #252942;
+}
+
+/*EXTRAS STYLES*/
+.dark-mode-btn.light {
+  background-image: url('../sprites/buttons/dark-mode.png');
+}
+
+/*GAME BOARD STYLES:*/
+.game-container.light {
+  background-color: #afc0d2;
+  border: 6px #4f6781 solid;
+  border-left-color: white;
+  border-top-color: white;
+}
+
+/*OTHERS:*/
+.custom-btn.light {
+  background-color: #afbfd2;
+  border-color: white #4f6781 #4f6781 white;
+  color: #252942;
+}
+
+.custom-btn:disabled.light,
+.custom-btn:active.light,
+.btn-active.light {
+  border-color: #8b9bb4 #afbfd2 #afbfd2 #8b9bb4;
+}
+
+/******************************/

@@ -1,189 +1,177 @@
 'use strict'
 
-var gBoard = []
+var gBoard
+var gLevel
+var gHistory
+var gGame
 
-var gLevel = {
-  SIZE: 7,
-  MINES: 6,
-  LIVES: 3,
-  HINTS: 3,
-  MEGA_HINTS: 3,
-  SAFE_CLICKS: 3,
+var gEmoji = {
+  HAPPY: 'emoji-happy',
+  DEAD: 'emoji-death',
+  COOL: 'emoji-cool',
+  SCARED: 'emoji-scared',
 }
 
-const gLEVELS = {
-  beginner: {
-    SIZE: 4,
-    MINES: 2,
-    LIVES: 1,
-    HINTS: 1,
-    MEGA_HINTS: 1,
-    SAFE_CLICKS: 1,
-  },
-  medium: {
-    SIZE: 8,
-    MINES: 14,
-    LIVES: 2,
-    HINTS: 2,
-    MEGA_HINTS: 2,
-    SAFE_CLICKS: 2,
-  },
-  expert: {
-    SIZE: 12,
-    MINES: 32,
-    LIVES: 3,
-    HINTS: 3,
-    MEGA_HINTS: 3,
-    SAFE_CLICKS: 3,
-  },
+function toggleDarkMode() {
+  gGame.isDarkMode = !gGame.isDarkMode
+  localStorage.setItem('isDarkMode', gGame.isDarkMode)
+
+  updateColorMode()
 }
 
-var gGame = {
-  isOn: true,
-  marksLeft: 0,
-  secsPassed: 0,
-  cellsShown: 0,
-  livesLeft: 0,
-  timerInterval: 0,
-  hintMode: false,
-  hintsLeft: 0,
-  safeClicksLeft: 0,
-  isOverMarked: false,
-  MAX_TIME: 999,
-  minesMarkStatus: {},
-  megaHintPositions: [],
-  megaHintsLeft: 0,
-  minesRevealed: [],
+function isDarkMode() {
+  return localStorage.getItem('isDarkMode') === 'true'
 }
 
-var gHistory = (gHistory = {
-  gBoards: [],
-  marksLeft: [],
-  livesLeft: [],
-})
+function updateColorMode() {
+  const searchQuery = `.${gGame.isDarkMode ? 'light' : 'dark'}`
+  const elements = document.querySelectorAll(searchQuery)
+  for (var i = 0; i < elements.length; i++) {
+    const element = elements[i]
+    element.classList.toggle('light')
+    element.classList.toggle('dark')
 
-var gClasses = {
-  EMOJI: {
-    HAPPY: 'emoji-happy',
-    DEAD: 'emoji-death',
-    COOL: 'emoji-cool',
-    SCARED: 'emoji-scared',
-  },
-  LIFE: '❤️',
-  HINT: '💡',
-  MEGA_HINT: '🗯️',
-  SAFE_CLICK: '👆',
+    if (element.classList.contains('custom-btn')) {
+      const elImg = element.querySelector('img')
+      if (!elImg) continue
+
+      const darkFile = 'dark-mode/' + element.id
+      const lightFile = element.id
+
+      var imgSrc = elImg.src
+      if (gGame.isDarkMode) imgSrc = imgSrc.replace(lightFile, darkFile)
+      else imgSrc = imgSrc.replace(darkFile, lightFile)
+      elImg.src = imgSrc
+    }
+  }
+  renderHelpersLeft()
 }
 
-function setMinesAmount(minesAmount) {
-  gLevel.MINES = minesAmount
+function renderBtns() {
+  var gameModesEl = document.querySelector('.game-modes')
+  gameModesEl.innerHTML =
+    getButtonHTML('beginner', 'Beginner', 'handleGameModeBtn(this)') +
+    getButtonHTML('medium', 'Medium', 'handleGameModeBtn(this)') +
+    getButtonHTML('expert', 'Expert', 'handleGameModeBtn(this)') +
+    getButtonHTML('seven-boom', '7-Boom', 'handleGameModeBtn(this)') +
+    getButtonHTML('manual', 'Manual Mode', 'handleGameModeBtn(this)')
+
+  var gameModesEl = document.querySelector('.helper-buttons-container')
+  gameModesEl.innerHTML =
+    getButtonHTML('hint', 'Hint', 'handleHelperBtn(this)') +
+    getButtonHTML('safe-click', 'Safe Click', 'handleHelperBtn(this)') +
+    getButtonHTML('mega-hint', 'Mega Hint', 'handleHelperBtn(this)') +
+    getButtonHTML('exterminator', 'Exterminator', 'handleHelperBtn(this)')
 }
 
 function initGame() {
-  //REMOVE - testing out styles///////
-  // var testEl = document.querySelector('.test')
-  // testEl.innerHTML = renderButton('7-boom', '7-BOOM')
-  var gameModesEl = document.querySelector('.game-modes')
-  gameModesEl.innerHTML =
-    renderButton('beginner', 'Beginner', 'toggleManager(this)') +
-    renderButton('medium', 'Medium', 'toggleManager(this)') +
-    renderButton('expert', 'Expert', 'toggleManager(this)') +
-    renderButton('7-boom', '7-Boom', 'handle7Boom()') +
-    renderButton('manual-mode', 'Manual Mode', 'toggleManager(this)')
-
-  var gameModesEl = document.querySelector('.helper-btns')
-  gameModesEl.innerHTML =
-    renderButton('hint-mode', 'Hint', 'toggleManager(this)') +
-    renderButton('safe-click', 'Safe Click', 'handleSafeClick()') +
-    renderButton('mega-hint-mode', 'Mega Hint', 'toggleManager(this)') +
-    renderButton('exterminator', 'Exterminator Buddy', 'handleExterminator()')
-  /////////////////
-
   resetGame()
-
-  updateLastSelectedDifficulty()
-
-  populateTogglers()
+  resetSelectedGameMode()
 
   gBoard = buildBoard()
-  gHistory = {
-    gBoards: [],
-    marksLeft: [],
-    livesLeft: [],
-    cellsShown: [],
+  renderBoard(gBoard)
+}
+
+function resetGame() {
+  if (gGame && gGame.timerInterval) clearTimer()
+  const difficulty = updateLastSelectedDifficulty()
+
+  gGame = {
+    isOn: true,
+    marksLeft: 0,
+    secsPassed: 0,
+    livesLeft: gLevel.LIVES,
+    timerInterval: 0,
+    cellsLeft: 0,
+    setMines: setMinesRandomly,
+    isDarkMode: isDarkMode(),
+    lastActionPos: {},
+    difficulty,
   }
 
-  gGame.minesMarkStatus = {}
+  gHistory = {
+    gBoards: [],
+    gGames: [],
+    i: 0,
+    length: 0,
+  }
 
-  gGame.marksLeft = 0
+  renderBtns()
+  populateHelpers()
+  disableBtns()
+  resetSelectedHelper()
+
   updateMarksLeft()
-
-  gGame.livesLeft = gLevel.LIVES
   updateLivesLeft()
-
-  gGame.hintsLeft = gLevel.HINTS
-  updateHintsLeft()
-
-  gGame.megaHintsLeft = gLevel.MEGA_HINTS
-  updateMegaHintsLeft()
-
-  gGame.safeClicksLeft = gLevel.SAFE_CLICKS
-  updateSafeClicksLeft()
-
   updateEmoji('HAPPY')
 
-  gGame.minesRevealed = []
+  updateColorMode()
 
-  gGame.cellsShown = 0
-  gGame.isOn = true
-  gGame.hintMode = false
-  gGame.megaHintPositions = []
-  gGame.isOverMarked = false
-  gGame.timerInterval = 0
-  gGame.secsPassed = 0
-  gGame.setMines = setMinesRandomly
-  renderTime(0)
-
+  renderTime()
   renderBestRecord()
-
-  renderBoard(gBoard)
 }
 
 function undoMove() {
-  if (!gGame.isOn) return
-  if (gHistory.gBoards.length === 0) return
-  gBoard = gHistory.gBoards.pop()
-  gGame.livesLeft = gHistory.livesLeft.pop()
-  gGame.marksLeft = gHistory.marksLeft.pop()
-  gGame.cellsShown = gHistory.cellsShown.pop()
+  _doHistoryPush()
+  gHistory.i--
+
+  _resetHistoryState()
+
+  if (!gGame.timerInterval) startTimer(gGame.secsPassed)
+
+  enableBtn('redo-btn')
+  if (gHistory.i === 0) disableBtn('undo-btn')
+}
+
+function redoMove() {
+  _doHistoryPush()
+  gHistory.i++
+
+  _resetHistoryState()
+
+  enableBtn('undo-btn')
+  if (gHistory.i === gHistory.length) {
+    checkGameOver(gGame.lastActionPos)
+    disableBtn('redo-btn')
+  }
+}
+
+function _resetHistoryState() {
+  gBoard = gHistory.gBoards[gHistory.i]
+  const historyGame = gHistory.gGames[gHistory.i]
+  _updateGameObjFromGameObj(gGame, historyGame)
 
   renderBoard(gBoard)
   updateLivesLeft()
   updateMarksLeft()
   updateEmoji('HAPPY')
+  enableHelpers()
 }
 
-function gameOver(didWin) {
-  resetGame()
+function gameOver(didWin, deathLoc = null) {
+  gGame.isOn = false
+  clearTimer()
+  resetSelectedGameMode()
+  resetSelectedHelper()
+  disableHelpers()
 
   updateEmoji(didWin ? 'COOL' : 'DEAD')
 
   if (didWin) {
-    const shortestTime = localStorage.getItem('best-record')
+    const recordQuery = `best-record-${gGame.difficulty}`
+    const shortestTime = localStorage.getItem(recordQuery)
     const isNewRecord = !shortestTime || gGame.secsPassed < shortestTime
 
-    if (isNewRecord) localStorage.setItem('best-record', gGame.secsPassed)
+    if (isNewRecord) localStorage.setItem(recordQuery, gGame.secsPassed)
   } else {
-    renderMinesOnLoss()
-    gGame.isOverMarked = false
-    handleOverMarked()
+    renderMinesOnLoss(deathLoc)
   }
 }
 
-function resetGame() {
-  clearInterval(gGame.timerInterval)
-  gGame.timerInterval = 0
-  gGame.isOn = false
+function disableBtns() {
+  disableHelpers()
+  disableBtn('undo-btn')
+  disableBtn('redo-btn')
 }
 
 function setMines7Boom(board = gBoard) {
@@ -197,45 +185,61 @@ function setMines7Boom(board = gBoard) {
   }
 }
 
-function handle7Boom() {
-  initGame()
-
-  gGame.setMines = setMines7Boom
-}
-
-function handleExterminator() {
-  //TODO: add gVar for 3
-  const mineLocations = Object.keys(gGame.minesMarkStatus)
-
-  mineLocations.sort(() => Math.random() - 0.5)
-
-  for (var i = 0; i < 3; i++) {
-    if (mineLocations.length === 0) return
-    const mineId = mineLocations.pop()
-    const mineLoc = _getMineLocFromId(mineId)
-    //remove flag
-    if (gBoard[mineLoc.i][mineLoc.j].isShown) continue
-    if (gGame.minesMarkStatus[mineId]) cellMarked(mineLoc.i, mineLoc.j)
-    removeMine(gBoard, mineLoc.i, mineLoc.j)
-  }
-}
-
 function _getMineLocFromId(mineId) {
   //mine-i-j
   const idParts = mineId.split('-')
   return { i: +idParts[1], j: +idParts[2] }
 }
 
-//TODO: dark mode
-//TODO: render mine that killed you
-//TODO: render wrong marks
 //TODO: render scared emoji
 
 function pushToHistory() {
-  gHistory.gBoards.push(copyObj(gBoard))
-  gHistory.livesLeft.push(gGame.livesLeft)
-  gHistory.marksLeft.push(gGame.marksLeft)
-  gHistory.cellsShown.push(gGame.cellsShown)
+  _doHistoryPush()
+  gHistory.i++
+  gHistory.length = gHistory.i
+  disableBtn('redo-btn')
+  enableBtn('undo-btn')
+}
+
+function _doHistoryPush() {
+  gHistory.gBoards[gHistory.i] = copyObj(gBoard)
+
+  const historyGame = {}
+  _updateGameObjFromGameObj(historyGame, gGame)
+  gHistory.gGames[gHistory.i] = historyGame
+}
+
+function _handleFirstHistoryPush() {
+  //all mines generate after 1st click so to make the experience
+  //of going back to a new board...
+  const firstBoard = gHistory.gBoards[0]
+  for (var i = 0; i < firstBoard.length; i++) {
+    for (var j = 0; j < firstBoard[0].length; j++) {
+      const firstBoardCell = firstBoard[i][j]
+      const newBoardCell = gBoard[i][j]
+
+      firstBoardCell.isMine = newBoardCell.isMine
+      firstBoardCell.isMarked = newBoardCell.isMarked
+      firstBoardCell.negMinesCount = newBoardCell.negMinesCount
+    }
+  }
+  const firstGame = gHistory.gGames[0]
+  firstGame.marksLeft = gGame.marksLeft
+  firstGame.cellsLeft = gLevel.SIZE ** 2 - gGame.marksLeft
+}
+
+function _updateGameObjFromGameObj(historyGameObj, gameObj) {
+  const gameTemplate = {
+    isOn: '',
+    marksLeft: '',
+    cellsLeft: '',
+    livesLeft: '',
+    secsPassed: '',
+  }
+  for (var key in gameTemplate) {
+    historyGameObj[key] = gameObj[key]
+  }
+  historyGameObj.lastActionPos = copyObj(gameObj.lastActionPos)
 }
 
 function cellClicked(i, j) {
@@ -246,26 +250,25 @@ function cellClicked(i, j) {
   pushToHistory()
 
   currCell.isShown = true
+
+  if (isFirstClick()) handleFirstClick()
+
+  gGame.lastActionPos = { i, j }
+
   renderCell(gBoard, i, j)
 
   if (currCell.isMine) {
-    if (!gGame.marksLeft) {
-      gGame.isOverMarked = true
-      handleOverMarked()
-    }
     updateLivesLeft(-1)
     updateMarksLeft(-1)
-    delete gGame.minesMarkStatus[`mine-${i}-${j}`]
-    gGame.minesRevealed.push({ i, j })
-    checkGameOver()
+    checkGameOver({ i, j })
     return
   }
 
-  gGame.cellsShown++
+  gGame.cellsLeft--
 
   if (currCell.negMinesCount === 0) expandShown(gBoard, i, j)
 
-  checkGameOver()
+  checkGameOver({ i, j })
 }
 
 function cellMarked(i, j) {
@@ -278,28 +281,13 @@ function cellMarked(i, j) {
 
   currCell.isMarked = !currCell.isMarked
 
-  if (gGame.minesMarkStatus.hasOwnProperty(`mine-${i}-${j}`)) {
-    gGame.minesMarkStatus[`mine-${i}-${j}`] = currCell.isMarked
-  }
-
   renderCell(gBoard, i, j)
+
+  gGame.lastActionPos = { i, j }
 
   updateMarksLeft(currCell.isMarked ? -1 : +1)
 
-  if (gGame.isOverMarked) {
-    gGame.isOverMarked = false
-    handleOverMarked()
-  }
-
-  checkGameOver()
-}
-
-function getMinesMarkedAmount() {
-  var counter = 0
-  for (var mine in gGame.minesMarkStatus) {
-    if (gGame.minesMarkStatus[mine]) counter++
-  }
-  return counter
+  checkGameOver({ i, j })
 }
 
 function setMinesRandomly(board = gBoard) {
@@ -342,19 +330,7 @@ function renderBoard(board) {
   elGameBoard.innerHTML = strHTML
 }
 
-function renderSafeClick(board) {
-  const nonMineElements = getHiddenNonMineElements(board)
-  const randIdx = getRandomInt(0, nonMineElements.length)
-  const safeElement = nonMineElements[randIdx]
-
-  if (!safeElement) return
-
-  safeElement.classList.add('safe')
-
-  setTimeout(() => safeElement.classList.remove('safe'), 2000)
-}
-
-function renderMinesOnLoss() {
+function renderMinesOnLoss(deathLoc) {
   for (var i = 0; i < gBoard.length; i++) {
     for (var j = 0; j < gBoard[0].length; j++) {
       const currCell = gBoard[i][j]
@@ -365,104 +341,38 @@ function renderMinesOnLoss() {
         renderCell(gBoard, i, j)
       } else if (currCell.isMarked && !currCell.isMine) {
         currCell.isShown = true
-        renderCell(gBoard, i, j, 'mine-wrong')
+        const className = supportDark('mine-wrong')
+        renderCell(gBoard, i, j, className)
       }
     }
   }
-  const mineDeathPos = gGame.minesRevealed.pop()
-  renderCell(gBoard, mineDeathPos.i, mineDeathPos.j, 'mine-death')
+  const className = supportDark('mine-death')
+  renderCell(gBoard, deathLoc.i, deathLoc.j, className)
 }
 
 //HANDLERS
-function handleSafeClick() {
-  if (didGameStart()) return
-
-  if (gGame.safeClicksLeft === 0) return
-
-  updateSafeClicksLeft(-1)
-  renderSafeClick(gBoard)
-}
-
 function handleClick(ev, elCell, i, j) {
   if (!gGame.isOn) return
   switch (ev.button) {
     case 0:
-      if (isToggled(gTogglers.MEGA_HINT_MODE))
+      if (isHelperPressed(gHelpers.MEGA_HINT)) {
         return handleMegaHintCellClick(i, j)
-      if (isToggled(gTogglers.MANUAL_MODE)) return handleManualBombClick(i, j)
-      if (isToggled(gTogglers.HINT_MODE)) return handleHintCellClick(i, j)
-      if (didGameStart()) handleFirstClick(i, j)
+      }
+      if (isHelperPressed(gHelpers.HINT)) {
+        return handleHintCellClick(i, j)
+      }
+      if (isGameModePressed(gGameModes.MANUAL)) {
+        return handleManualBombClick(i, j)
+      }
       return cellClicked(i, j)
     case 2:
-      return cellMarked(i, j)
+      if (!isFirstClick()) return cellMarked(i, j)
   }
-}
-
-function handleMegaHintCellClick(i, j) {
-  console.log('HERY')
-  if (didGameStart()) return
-  const positions = gGame.megaHintPositions
-  positions.push({ i, j })
-  if (positions.length === 2) {
-    _flashArea(...positions, 2000)
-    endMegaHintMode()
-  }
-}
-
-function handleFirstClick(i, j) {
-  const currCell = gBoard[i][j]
-  currCell.isShown = true
-  gGame.setMines()
-  const startTime = Date.now()
-  gGame.timerInterval = setInterval(() => updateTime(startTime), 1000)
-  renderCell(gBoard, i, j)
-
-  if (currCell.isMine) {
-    if (!gGame.marksLeft) {
-      gGame.isOverMarked = true
-      handleOverMarked()
-    }
-    updateLivesLeft(-1)
-    updateMarksLeft(-1)
-    delete gGame.minesMarkStatus[`mine-${i}-${j}`]
-    gGame.minesRevealed.push({ i, j })
-    if (gGame.livesLeft === 0) return gameOver(false)
-    return
-  }
-
-  gGame.cellsShown = 1
-  if (currCell.negMinesCount === 0) expandShown(gBoard, i, j)
-}
-
-function handleOverMarked() {
-  for (var i = 0; i < gBoard.length; i++) {
-    for (var j = 0; j < gBoard[0].length; j++) {
-      const currCell = gBoard[i][j]
-      if (!currCell.isMarked) continue
-
-      const elMarkedCell = getElCellByCoords(i, j)
-      if (gGame.isOverMarked) elMarkedCell.classList.add('over-mark')
-      else elMarkedCell.classList.remove('over-mark')
-    }
-  }
-  const overMarkMsg = document.querySelector('.over-mark-msg')
-  if (gGame.isOverMarked) overMarkMsg.classList.remove('hide')
-  else overMarkMsg.classList.add('hide')
-}
-
-function handleHintCellClick(i, j) {
-  if (didGameStart()) return
-
-  const startPos = { i: i - 1, j: j - 1 }
-  const endPos = { i: i + 1, j: j + 1 }
-  _flashArea(startPos, endPos, 1000)
-  endHintMode()
 }
 
 function handleManualBombClick(i, j) {
   addMine(gBoard, i, j)
   renderCell(gBoard, i, j)
-  setMinesAmount(gGame.marksLeft)
 }
 
 function expandShown(board, a, b) {
@@ -486,7 +396,7 @@ function doExpandShown(board, i, j) {
 
   if (currCell.negMinesCount === 0) expandShown(board, i, j)
 
-  gGame.cellsShown++
+  gGame.cellsLeft--
 }
 
 //CHECKERS
@@ -494,29 +404,44 @@ function isClickable(cell) {
   return !cell.isMarked && !cell.isShown
 }
 
-function checkGameOver() {
-  const cellsShowingAmount = gGame.cellsShown + gGame.minesRevealed.length
-  const markedMinesAmount = getMinesMarkedAmount()
-
-  const didWin = cellsShowingAmount + markedMinesAmount === gLevel.SIZE ** 2
-
+function checkGameOver(cellLoc) {
+  const didWin = gGame.cellsLeft === 0 && gGame.marksLeft === 0
   const didLose = gGame.livesLeft === 0
 
   if (didWin) gameOver(true)
-  if (didLose) gameOver(false)
+  if (didLose) gameOver(false, cellLoc)
 }
 
-function didGameStart() {
-  // return gGame.timerInterval === 0 && gGame.isOn === true
-  return gGame.cellsShown === 0
+function isFirstClick() {
+  return gGame.timerInterval === 0 && gGame.isOn === true
+}
+
+function handleFirstClick() {
+  startTimer()
+
+  enableHelpers()
+  enableBtn('undo-btn')
+
+  gGame.setMines()
+  gGame.cellsLeft = gLevel.SIZE ** 2 - gGame.marksLeft
+  _handleFirstHistoryPush()
+  gGame.setMines = () => {} //reset for undo purposes
+}
+
+function startTimer(secsPassed = 0) {
+  const startTime = Date.now()
+  gGame.timerInterval = setInterval(
+    () => updateTime(startTime, secsPassed),
+    1000
+  )
+}
+
+function clearTimer(secsPassed = 0) {
+  clearInterval(gGame.timerInterval)
+  gGame.timerInterval = 0
 }
 
 //UPDATORS
-function updateEmoji(type) {
-  const elEmojiBtn = document.querySelector('.emoji')
-  elEmojiBtn.className = `emoji ${gClasses.EMOJI[type]}`
-  //Add scared emoji call
-}
 
 //UTILS/GETTERS:
 
@@ -560,40 +485,6 @@ function getHiddenNonMineElements(board) {
   return nonMineElements
 }
 
-function updateTime(startTime) {
-  const currTime = Date.now()
-  const elapsed = currTime - startTime
-
-  gGame.secsPassed = parseInt(elapsed / 1000)
-  if (gGame.secsPassed < gGame.MAX_TIME) renderTime(gGame.secsPassed)
-  //still count towards best time but not update past MAX_TIME
-}
-
-function renderTime(secs) {
-  const timeSegments = getTimeSegments(secs)
-
-  for (var segment in timeSegments) {
-    const timer = document.querySelector(`#timer-${segment}`)
-    timer.className = `counter count-${timeSegments[segment]}`
-  }
-}
-
-function getCountSegments(count) {
-  const segments = {}
-  segments.tens = Math.floor(count / 10)
-  segments.ones = count % 10
-  return segments
-}
-
-function renderCount(count) {
-  const countSegments = getCountSegments(count)
-
-  for (var segment in countSegments) {
-    const counter = document.querySelector(`#counter-${segment}`)
-    counter.className = `counter count-${countSegments[segment]}`
-  }
-}
-
 function renderCell(board, i, j, additionalClasses = '') {
   const elCell = getElCellByCoords(i, j)
   elCell.className = `${getCssClasses(board, i, j)} ${additionalClasses}`
@@ -601,14 +492,15 @@ function renderCell(board, i, j, additionalClasses = '') {
 
 function getCssClasses(board, i, j) {
   const cell = board[i][j]
-  const classes = ['cell']
+  const cellClassName = supportDark('cell')
+  const classes = [cellClassName]
+
   if (cell.isShown) {
     if (cell.isMine) classes.push('mine')
     else if (cell.negMinesCount) classes.push(`negs-${cell.negMinesCount}`)
     else classes.push('empty')
-  } else if (cell.isMarked) {
-    classes.push('mark')
-  }
+  } else if (cell.isMarked) classes.push('mark')
+
   return classes.join(' ')
 }
 
@@ -620,7 +512,6 @@ function addMine(board, i, j) {
   if (board[i][j].isMine) return
   board[i][j].isMine = true
   updateMarksLeft(+1)
-  gGame.minesMarkStatus[`mine-${i}-${j}`] = false //not marked yet
 
   _updateNegMinesCount(board, i, j, +1)
 }
@@ -628,7 +519,6 @@ function addMine(board, i, j) {
 function removeMine(board, i, j) {
   board[i][j].isMine = false
   updateMarksLeft(-1)
-  delete gGame.minesMarkStatus[`mine-${i}-${j}`]
 
   _updateNegMinesCount(board, i, j, -1)
 }
@@ -645,9 +535,18 @@ function _updateNegMinesCount(board, a, b, diff) {
   }
 }
 
-function _toggleCellReveal(i, j) {
-  gBoard[i][j].isShown = !gBoard[i][j].isShown
-  renderCell(gBoard, i, j)
+function _revealCell(i, j) {
+  const cell = gBoard[i][j]
+  const elCell = getElCellByCoords(i, j)
+
+  const cellClassName = supportDark('cell')
+  const classes = [cellClassName]
+
+  if (cell.isMine) classes.push('mine')
+  else if (cell.negMinesCount) classes.push(`negs-${cell.negMinesCount}`)
+  else classes.push('empty')
+
+  elCell.className = classes.join(' ')
 }
 
 function _flashArea(startPos, endPos, flashTime) {
@@ -664,17 +563,17 @@ function _flashArea(startPos, endPos, flashTime) {
       if (gBoard[i][j].isShown) continue
 
       revealedCells.push([i, j])
-      _toggleCellReveal(i, j)
+      _revealCell(i, j)
     }
   }
+  gGame.isOn = false
+  disableHelpers()
 
   setTimeout(() => {
     for (var i = 0; i < revealedCells.length; i++) {
-      _toggleCellReveal(...revealedCells[i])
+      renderCell(gBoard, ...revealedCells[i])
     }
+    gGame.isOn = true
+    enableHelpers()
   }, flashTime)
-}
-
-function copyObj(board) {
-  return JSON.parse(JSON.stringify(board))
 }
