@@ -87,6 +87,7 @@ function handleExterminator() {
     const mineLoc = mineLocations.pop()
     if (gBoard[mineLoc.i][mineLoc.j].isMarked) cellMarked(mineLoc.i, mineLoc.j)
     removeMine(gBoard, mineLoc.i, mineLoc.j)
+    gGame.cellsLeft++
   }
   updateAmountLeft(gHelpers.EXTERMINATOR, -1)
   unselectButton(gHelpers.EXTERMINATOR, gHelperSelected)
