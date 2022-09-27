@@ -127,23 +127,23 @@ body.dark {
 
 /*GAME BOARD STYLES:*/
 .game-container.dark {
-  background-color: #41485e;
-  border: 6px #1c1b29 solid;
-  border-left-color: #788697;
-  border-top-color: #788697;
+  background-color: #3a4466;
+  border: 6px #181425 solid;
+  border-left-color: #8b9bb4;
+  border-top-color: #8b9bb4;
 }
 
 /*OTHERS:*/
 .custom-btn.dark {
-  background-color: #41485e;
-  border-color: #788697 #1c1b29 #1c1b29 #788697;
-  color: white;
+  background-color: #3a4466;
+  border-color: #8b9bb4 #181425 #181425 #8b9bb4;
+  color: #f0f0f0;
 }
 
 .custom-btn:disabled.dark,
 .custom-btn:active.dark,
 .btn-active.dark {
-  border-color: #1c1b29 #41485e #41485e #1c1b29;
+  border-color: #181425 #3a4466 #3a4466 #181425;
 }
 
 /******************************/

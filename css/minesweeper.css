@@ -30,10 +30,10 @@ p {
 .page-container {
   font-family: 'VT323', monospace;
   margin: auto;
-  margin: auto;
-  max-width: 1400px;
-  min-width: 300px;
+  max-width: 1500px;
+  min-width: 870px;
   text-align: center;
+  margin-top: 50px;
 }
 
 table {
