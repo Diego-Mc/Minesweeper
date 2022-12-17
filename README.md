@@ -31,21 +31,22 @@
 - [🔧  Features](#-features)
   - [🔍  Hint](#-hint)
   - [🧠  Mega Hint](#-mega-hint)
-  - [🛡️  Safe click](#️-safe-click)
+  - [🛡️  Safe Click](#️-safe-click)
   - [🚫  Exterminator](#-exterminator)
-  - [💪🏼  First click is safe](#-first-click-is-safe)
+  - [💪🏼  First Click Is Safe](#-first-click-is-safe)
   - [🔁  History](#-history)
-  - [🌙  Dark mode](#-dark-mode)
-  - [💕  Extra lives](#-extra-lives)
-  - [🏆  Best record](#-best-record)
-- [🎯 Game modes](#-game-modes)
-  - [📊  Difficulty levels](#-difficulty-levels)
+  - [🌙  Dark Mode](#-dark-mode)
+  - [💕  Extra Lives](#-extra-lives)
+  - [🏆  Best Record](#-best-record)
+- [🎯 Game Modes](#-game-modes)
+  - [📊  Difficulty Levels](#-difficulty-levels)
   - [💥  7-Boom](#-7-boom)
-  - [📏  Manual mode](#-manual-mode)
+  - [📏  Manual Mode](#-manual-mode)
 - [📐  Development](#-development)
-- [📄  About me](#-about-me)
+- [📄  About Me](#-about-me)
 - [🚀  Getting Started](#-getting-started)
 - [📜  License](#-license)
+
 
 
 </details>
@@ -105,7 +106,7 @@ The mega hint feature allows players to reveal all of the cells between a select
 
 <br/>
 
-## 🛡️ &nbsp;Safe click
+## 🛡️ &nbsp;Safe Click
 
 <div align="center">
     <img src="https://res.cloudinary.com/wewix/image/upload/v1671222489/MINESWEEPER/md-minesweeper-safe-click_cflzhj.gif">
@@ -125,7 +126,7 @@ The exterminator feature removes three mines from the grid, making it easier for
 
 <br/>
 
-## 💪🏼 &nbsp;First click is safe
+## 💪🏼 &nbsp;First Click Is Safe
 The first click in Minesweeper+ is always safe, meaning it will not contain a mine. This allows players to start the game without the added stress of potentially clicking on a mine on their first try.
 
 <br/>
@@ -141,7 +142,7 @@ In Minesweeper+, players have the option to use redo and undo buttons to help th
 
 <br/>
 
-## 🌙 &nbsp;Dark mode
+## 🌙 &nbsp;Dark Mode
 
 <div align="center">
     <img src="https://res.cloudinary.com/wewix/image/upload/v1671222489/MINESWEEPER/md-minesweeper-dark-mode_xualw5.gif">
@@ -151,7 +152,7 @@ The dark mode feature in Minesweeper+ allows players to switch to a darker color
 
 <br/>
 
-## 💕 &nbsp;Extra lives
+## 💕 &nbsp;Extra Lives
 
 <div align="center">
     <img src="https://res.cloudinary.com/wewix/image/upload/v1671223445/MINESWEEPER/md-minesweeper-extralives_ybawwt.gif">
@@ -160,7 +161,7 @@ The extra lives feature in Minesweeper+ allows players to have additional chance
 
 <br/>
 
-## 🏆 &nbsp;Best record
+## 🏆 &nbsp;Best Record
 
 <div align="center">
     <img src="https://res.cloudinary.com/wewix/image/upload/v1671222481/MINESWEEPER/md-minesweeper-best-score_lgmqyt.png">
@@ -170,12 +171,12 @@ After winning a game for the first time in a specific difficulty, the player's b
 
 <br/>
 
-# 🎯 Game modes
+# 🎯 Game Modes
 Minesweeper+ takes the classic game to the next level with a wide range of innovative features that add new levels of strategy and challenge. From helpful hints and safe clicks to custom game modes and best record tracking, this section highlights all the unique features that make Minesweeper+ a must-play.
 
 <br/>
 
-## 📊 &nbsp;Difficulty levels
+## 📊 &nbsp;Difficulty Levels
 
 <div align="center">
     <img src="https://res.cloudinary.com/wewix/image/upload/v1671222494/MINESWEEPER/md-minesweeper-diff-select_cqmtsr.gif">
@@ -203,7 +204,7 @@ In Minesweeper+, the 7-Boom game mode renders a board with mines placed in speci
 
 <br/>
 
-## 📏 &nbsp;Manual mode
+## 📏 &nbsp;Manual Mode
 
 <div align="center">
     <img src="https://res.cloudinary.com/wewix/image/upload/v1671222493/MINESWEEPER/md-minesweeper-manual_vqtxje.gif">
@@ -222,7 +223,7 @@ I hope you enjoy playing Minesweeper+ and exploring all the different features a
 
 <br/>
 
-# 📄 &nbsp;About me
+# 📄 &nbsp;About Me
 I am Diego Monzon Contreras, a former student of Coding Academy, a coding bootcamp. One of my first big projects at the bootcamp was to create a clone of the minesweeper game, with the option to add additional features as bonuses. Within the four days allocated for the task, I managed to not only complete the entire game, but also add all the bonuses and create my own sprites for a visually appealing design. This was early on in the bootcamp, before we delved into CSS. I am very proud of the progress I made and the results of this project, which remains one of my favorites even though it was built using plain JavaScript without any frameworks or libraries.
 
 <div align="center">
