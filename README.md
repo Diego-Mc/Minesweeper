@@ -6,7 +6,7 @@
   <h3 align="center">Step up your minesweeper game</h3>
   </br>
   <p align="left">
-    Welcome to Minesweeper+, a modern take on the classic minesweeper game! In this game, you will need to carefully reveal tiles on a grid, trying to avoid the hidden mines while using logic to deduce the locations of the mines. With our app, you can play the classic minesweeper game and also enjoy additional features and game modes that add new challenges and strategies to the game.
+    Welcome to Minesweeper+, a modern take on the classic Minesweeper game! In this game, you will need to carefully reveal tiles on a grid, trying to avoid the hidden mines while using logic to deduce the locations of the mines. With our app, you can play the classic minesweeper game and also enjoy additional features and game modes that add new challenges and strategies to the game.
     <br />
   </p>
   <br/>
