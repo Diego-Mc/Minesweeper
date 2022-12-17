@@ -58,9 +58,9 @@
     <img src="https://res.cloudinary.com/wewix/image/upload/v1671222499/MINESWEEPER/md-minesweaper-hero_jq003d.gif">
 </div>
 
-Minesweeper+ is a modern take on the classic minesweeper game, developed as a project in the Coding Academy bootcamp in just four days. Using vanilla JavaScript and basic HTML and CSS, I created an updated version of the classic game with additional features and game modes that add new challenges and strategies. All of the game sprites were also created by me within this short time frame.
+Minesweeper+ is a fresh take on the classic minesweeper game that was developed as a project in the Coding Academy bootcamp. Completed in just four days, this project showcases my programming skills and ability to think creatively. Using vanilla JavaScript and basic HTML and CSS, I created an updated version of the classic game with additional features and game modes that add new challenges and strategies. I also designed all of the game sprites myself. As my first project in the bootcamp, Minesweeper+ is a testament to my dedication and potential as a programmer.
 
-I hope you enjoy playing Minesweeper+ and exploring all the different features and game modes that make it a unique and exciting update on the classic minesweeper game.
+I hope you have fun playing Minesweeper+ and experiencing all of the unique features and game modes that make it a thrilling update on the classic minesweeper game.
 
 <br/>
 
